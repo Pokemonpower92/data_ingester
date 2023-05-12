@@ -5,7 +5,6 @@ from app.data_ingester.edgaringester import EDGARInjester
 
 @app.route("/")
 def index():
-    print("Index prints.")
     return "Hello world"
 
 
