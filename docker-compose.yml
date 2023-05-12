@@ -11,7 +11,20 @@ services:
           - cache:/data
         networks:
           - accountability
-#s
+    app:
+        container_name: data_ingester
+        build: ./
+        ports:
+            - "5001:5000"
+        depends_on:
+        - cache
+        environment:
+            PYTHONUNBUFFERED: 1
+            REDIS_HOST: cache
+            REDIS_PORT: 6379
+            REDIS_PASSWORD: redispass
+        networks:
+          - accountability
 
 volumes:
   cache:
