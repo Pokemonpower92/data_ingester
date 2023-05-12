@@ -1,11 +1,10 @@
 import json
 
-from flask import abort, make_response, jsonify
+from flask import make_response
 
-from app.data_ingester.constants.edgarconstants import COMPANY_TICKER_KEY, COMPANY_TICKERS, HEADERS, CIK_LENGTH, \
-    SESSION, SESSION_URL, COMPANY_TICKER_URL
+from app.data_ingester.constants.edgarconstants import HEADERS, CIK_LENGTH, \
+     SESSION_URL, COMPANY_TICKER_URL
 from app.data_ingester.dataingester import DataIngester
-from app.data_ingester_error.dataingestererror import DataIngesterError
 
 
 class EDGARInjester(DataIngester):
@@ -13,7 +12,7 @@ class EDGARInjester(DataIngester):
     Ingests data from the SEC EDGAR API.
     """
 
-    def ingest(self, ticker: str) -> json:
+    def ingest(self, ticker: str = None) -> json:
         """
         Pull down data from EDGAR and populate the
         company_ticker_mapping, then fetch the data
