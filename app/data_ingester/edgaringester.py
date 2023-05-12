@@ -8,7 +8,7 @@ from app.data_ingester.dataingester import DataIngester
 from app.data_ingester_logger.dataingesterlogger import DataIngesterLogger
 
 
-class EDGARInjester(DataIngester):
+class EDGARIngester(DataIngester):
     """
     Ingests data from the SEC EDGAR API.
     """
@@ -31,6 +31,7 @@ class EDGARInjester(DataIngester):
 
         except Exception as e:
             self.LOGGER.error(f"Could not ingest data for ticker: {ticker}. Error: {e}")
+            raise e
 
     def _get_ticker_cik_mapping(self, ticker: str) -> str:
         """

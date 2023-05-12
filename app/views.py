@@ -1,6 +1,6 @@
 from app import app
 
-from app.data_ingester.edgaringester import EDGARInjester
+from app.data_ingester.edgaringester import EDGARIngester
 
 
 @app.route("/")
@@ -10,4 +10,4 @@ def index():
 
 @app.route("/edgar/<ticker>")
 def edgar(ticker: str) -> str:
-    return EDGARInjester().ingest(ticker)
+    return EDGARIngester().ingest(ticker)
