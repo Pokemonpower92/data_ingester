@@ -1,0 +1,54 @@
+  BASE.cik
+  BASE.entityType
+  BASE.sic
+  BASE.sicDescription
+  BASE.insiderTransactionForOwnerExists
+  BASE.insiderTransactionForIssuerExists
+  BASE.name
+  BASE.tickers
+  BASE.exchanges
+  BASE.ein
+  BASE.description
+  BASE.website
+  BASE.investorWebsite
+  BASE.category
+  BASE.fiscalYearEnd
+  BASE.stateOfIncorporation
+  BASE.stateOfIncorporationDescription
+  BASE.addresses
+    addresses.mailing
+      mailing.street1
+      mailing.street2
+      mailing.city
+      mailing.stateOrCountry
+      mailing.zipCode
+      mailing.stateOrCountryDescription
+    addresses.business
+      business.street1
+      business.street2
+      business.city
+      business.stateOrCountry
+      business.zipCode
+      business.stateOrCountryDescription
+  BASE.phone
+  BASE.flags
+  BASE.formerNames
+  BASE.filings
+    filings.recent <<< --- EACH OF THESE IS A LIST. IE. index 0 is the same row for each list, where a list is a column.
+      recent.accessionNumber
+      recent.filingDate
+      recent.reportDate
+      recent.acceptanceDateTime
+      recent.act
+      recent.form
+      recent.fileNumber
+      recent.filmNumber
+      recent.items
+      recent.size
+      recent.isXBRL
+      recent.isInlineXBRL
+      recent.primaryDocument
+      recent.primaryDocDescription
+    filings.files <<< --- this is historical data of the form:
+
+[{'name': 'CIK0000320193-submissions-001.json', 'filingCount': 972, 'filingFrom': '1994-01-26', 'filingTo': '2013-02-03'}]

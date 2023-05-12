@@ -1,0 +1,3 @@
+
+class DataIngesterError(Exception):
+    pass

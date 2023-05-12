@@ -1,0 +1,22 @@
+version: "3"
+services:
+    cache:
+        container_name: accountability_cache
+        image: redis:6.2-alpine
+        restart: always
+        ports:
+          - '6379:6379'
+        command: redis-server --save 20 1 --loglevel warning --requirepass redispass
+        volumes:
+          - cache:/data
+        networks:
+          - accountability
+#s
+
+volumes:
+  cache:
+    driver: local
+
+networks:
+  accountability:
+    driver: bridge
