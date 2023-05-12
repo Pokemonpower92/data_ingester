@@ -88,6 +88,3 @@ class TestEdgarIngester(TestCase):
         response = ingester._get_transaction_data_by_ticker("AAPL")
 
         assert response.status_code == 200
-
-
-
