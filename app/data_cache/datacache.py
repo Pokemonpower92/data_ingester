@@ -1,12 +1,12 @@
 import json
 import pickle
-from datetime import timedelta
 from typing import Any, Dict
 
 import redis
 from redis.commands.json.path import Path
 
-from app.data_ingester_config.cacheconfig import REDIS_CONFIG
+from app.data_ingester_config.cacheconfig import REDIS_CONFIG, TICKER_MAPPING_EX, SESSION_DATA_EX, SESSION_DATA_KEY, \
+    SESSION_EX_KEY
 
 
 class DataCache:
@@ -27,7 +27,7 @@ class DataCache:
         """
 
         p_dict = pickle.dumps(value)
-        self.cache_instance.setex(key, timedelta(minutes=1), p_dict)
+        self.cache_instance.setex(key, TICKER_MAPPING_EX, p_dict)
         return pickle.loads(self.cache_instance.get(key))
 
     def get(self, key: str) -> Dict[str, Any]:
@@ -51,8 +51,8 @@ class DataCache:
         :return: the cached response.
         """
 
-        self.cache_instance.json().set(f"{cik}:response", "$", response)
-        self.cache_instance.setex(f"{cik}:timer", timedelta(seconds=20), "NONE")
+        self.cache_instance.json().set(SESSION_DATA_KEY.format(cik), "$", response)
+        self.cache_instance.setex(SESSION_EX_KEY.format(cik), SESSION_DATA_EX, "NONE")
 
         return response
 
@@ -67,8 +67,8 @@ class DataCache:
         # We only want to cache this for a single day, as the reports update daily.
         # We'll use a separate key-value pair to delete the response on schedule,
         # as redisJSON doesn't support setx.
-        if not self.cache_instance.get(f"{cik}:timer"):
-            self.cache_instance.json().delete(f"{cik}:response")
+        if not self.cache_instance.get(SESSION_EX_KEY.format(cik)):
+            self.cache_instance.json().delete(SESSION_DATA_KEY.format(cik))
             return {}
         else:
-            return self.cache_instance.json().get(f"{cik}:response")
+            return self.cache_instance.json().get(SESSION_DATA_KEY.format(cik))
