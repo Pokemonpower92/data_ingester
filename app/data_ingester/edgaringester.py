@@ -56,30 +56,23 @@ class EDGARInjester(DataIngester):
         try:
             company_mapping = self._get_ticker_cik_mapping(ticker)
             cik = str(company_mapping["cik_str"]).rjust(CIK_LENGTH, '0')
-            response = self.data_fetcher.fetch(SESSION_URL.format(cik), HEADERS)
-
-            ##TODO these should be cached for each company:
-            # by accessing response["filings"]["recent"]
-            #       recent.accessionNumber
-            #       recent.filingDate
-            #       recent.reportDate
-            #       recent.acceptanceDateTime
-            #       recent.act
-            #       recent.form
-            #       recent.fileNumber
-            #       recent.filmNumber
-            #       recent.items
-            #       recent.size
-            #       recent.isXBRL
-            #       recent.isInlineXBRL
-            #       recent.primaryDocument
-            #       recent.primaryDocDescription
-            # It should be keyed by CIK+recent
-
-            ##TODO Probably want to cache this. these are historical records.
-            # response["filings"]["files"]
-
-            return response
+            return self._retrieve_transaction_data(cik)
 
         except Exception as e:
             return make_response({"oopsie x3": "There was a wittle 404 x3B"}, 404)
+
+    def _retrieve_transaction_data(self, cik: str) -> json:
+        """
+        Either fetch the session endpoint data from cache or the
+        endpoint.
+        :param cik: cik of the company.
+        :return: the transaction data response from EDGAR's sessions endpoint.
+        """
+
+        print("getting session data.")
+        session_data = self.data_cache.get_session_json(cik)
+        if not session_data:
+            print("cache miss")
+            session_data = self.data_cache.cache_session_json(cik, self.data_fetcher.fetch(SESSION_URL.format(cik), HEADERS))
+
+        return session_data
