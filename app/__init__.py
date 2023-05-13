@@ -1,3 +1,3 @@
 from flask import Flask
 app = Flask(__name__)
-from app import views, data_ingester, data_fetcher, data_cache, data_ingester_config
+from app import views, data_ingester, data_fetcher, data_cache, data_ingester_config, data_ingester_limiter
