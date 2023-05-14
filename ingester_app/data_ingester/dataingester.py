@@ -1,7 +1,7 @@
 import json
 
-from app.data_cache.datacache import DataCache
-from app.data_fetcher.datafetcher import DataFetcher
+from ingester_app.data_cache.datacache import DataCache
+from ingester_app.data_fetcher.datafetcher import DataFetcher
 
 
 class DataIngester:

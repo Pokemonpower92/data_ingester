@@ -1,7 +1,7 @@
 import pickle
 from unittest import TestCase, mock
 
-from app.data_cache.datacache import DataCache
+from ingester_app.data_cache.datacache import DataCache
 
 data = {}
 
