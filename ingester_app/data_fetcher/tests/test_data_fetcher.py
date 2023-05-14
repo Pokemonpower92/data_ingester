@@ -1,7 +1,7 @@
 from unittest import TestCase, mock
 from requests import Response
 
-from app.data_fetcher.datafetcher import DataFetcher
+from ingester_app.data_fetcher.datafetcher import DataFetcher
 
 mock_request = {
     "endpoint": "blah",
@@ -18,8 +18,8 @@ def mock_get(endpoint, headers):
 
 class TestDataFetcher(TestCase):
 
-    @mock.patch("app.data_fetcher.datafetcher.requests.get")
-    @mock.patch("app.data_fetcher.datafetcher.requests.Response.json")
+    @mock.patch("ingester_app.data_fetcher.datafetcher.requests.get")
+    @mock.patch("ingester_app.data_fetcher.datafetcher.requests.Response.json")
     def test_fetch(self, mocked_json, mocked_get):
         data_fetcher = DataFetcher()
         mocked_get.return_value = mock_get("blah", {"fake": "fake"})

@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from app.data_ingester_logger.dataingesterlogger import DataIngesterLogger
+from ingester_app.data_ingester_logger.dataingesterlogger import DataIngesterLogger
 
 
 class DataFetcher:

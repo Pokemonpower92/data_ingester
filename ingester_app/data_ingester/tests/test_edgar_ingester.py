@@ -1,6 +1,6 @@
 from unittest import TestCase, mock
 
-from app.data_ingester.edgaringester import EDGARIngester
+from ingester_app.data_ingester.edgaringester import EDGARIngester
 
 
 def mock_ticker_mapping(success: bool) -> dict:
@@ -53,7 +53,7 @@ def get_mock_response(success: bool):
 
 class TestEdgarIngester(TestCase):
 
-    module_string = "app.data_ingester.edgaringester"
+    module_string = "ingester_app.data_ingester.edgaringester"
     class_string = module_string + ".EDGARIngester"
 
     @mock.patch(class_string+"._get_transaction_data_by_ticker")

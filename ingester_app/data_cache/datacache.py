@@ -5,7 +5,7 @@ from typing import Any, Dict
 import redis
 from redis.commands.json.path import Path
 
-from app.data_ingester_config.cacheconfig import REDIS_CONFIG, TICKER_MAPPING_EX, SESSION_DATA_EX, SESSION_DATA_KEY, \
+from ingester_app.data_ingester_config.cacheconfig import REDIS_CONFIG, TICKER_MAPPING_EX, SESSION_DATA_EX, SESSION_DATA_KEY, \
     SESSION_EX_KEY
 
 

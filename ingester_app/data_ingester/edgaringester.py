@@ -2,10 +2,10 @@ import json
 
 from flask import make_response
 
-from app.data_ingester.constants.edgarconstants import HEADERS, CIK_LENGTH, \
+from ingester_app.data_ingester.constants.edgarconstants import HEADERS, CIK_LENGTH, \
      SESSION_URL, COMPANY_TICKER_URL
-from app.data_ingester.dataingester import DataIngester
-from app.data_ingester_logger.dataingesterlogger import DataIngesterLogger
+from ingester_app.data_ingester.dataingester import DataIngester
+from ingester_app.data_ingester_logger.dataingesterlogger import DataIngesterLogger
 
 
 class EDGARIngester(DataIngester):
@@ -47,6 +47,7 @@ class EDGARIngester(DataIngester):
         if not cache_value:
             self.LOGGER.info("Ticker to cik mapping was uncached. Caching.")
             company_tickers_response = self.data_fetcher.fetch(COMPANY_TICKER_URL, HEADERS)
+
             for idx, company_data in company_tickers_response.items():
                 if ticker == company_data["ticker"]:
                     cache_value = self.data_cache.cache(ticker, company_data)

@@ -2,7 +2,7 @@
 import os
 from datetime import timedelta
 
-from app.data_ingester_config.dataingesterconfig import DataIngesterConfig
+from ingester_app.data_ingester_config.dataingesterconfig import DataIngesterConfig
 
 REDIS_CONFIG = {
     "host": os.environ.get('REDIS_HOST', "localhost"),
