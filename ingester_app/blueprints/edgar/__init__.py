@@ -3,7 +3,6 @@ from flask import Blueprint, render_template, current_app
 from ingester_app.data_ingester.edgaringester import EDGARIngester
 from ingester_app.data_ingester_config.limitconfig import NINE_A_SECOND
 from ingester_app.data_ingester_limiter.dataingesterlimiter import data_ingester_limiter
-from ingester_app.data_ingester_async.periodic_tasks.tasks import ingest_cik_ticker_mapping
 
 rate_limiter = data_ingester_limiter(current_app)
 edgar_blueprint = Blueprint("edgar", __name__, url_prefix="/edgar", template_folder="templates")
@@ -12,13 +11,6 @@ edgar_blueprint = Blueprint("edgar", __name__, url_prefix="/edgar", template_fol
 @edgar_blueprint.route("/")
 def edgar_index() -> str:
     return render_template("index.html")
-
-
-@edgar_blueprint.route("/update")
-@rate_limiter.limit(NINE_A_SECOND)
-def edgar_update() -> str:
-    result = ingest_cik_ticker_mapping.delay()
-    return f"result: {result.result}"
 
 
 @edgar_blueprint.route("/<ticker>")
