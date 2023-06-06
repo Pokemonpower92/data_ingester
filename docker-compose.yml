@@ -4,14 +4,13 @@ services:
   db:
     image: mysql:8.0
     container_name: accountability_db
-    cap_add:
-      - SYS_NICE
-    restart: always
+    command: --init-file /docker-entrypoint-initdb.d/init.sql
     environment:
-      - MYSQL_DATABASE=quotes
       - MYSQL_ROOT_PASSWORD=root
     ports:
       - '3306:3306'
+    expose:
+      - '3306'
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
@@ -44,6 +43,7 @@ services:
           - "5001:5000"
       depends_on:
       - redis
+      - db
       environment:
           PYTHONUNBUFFERED: 1
           DEBUG: "0"
@@ -51,6 +51,11 @@ services:
           REDIS_PORT: 6379
           REDIS_USER: guest
           REDIS_PASSWORD: redispass
+          DB_HOST: db
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_PORT: 3306
+          DB_NAME: accountability_db
       networks:
         - accountability
 
@@ -65,9 +70,15 @@ services:
       REDIS_PORT: 6379
       REDIS_USER: guest
       REDIS_PASSWORD: redispass
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_PORT: 3306
+      DB_NAME: accountability_db
     depends_on:
       - app
       - redis
+      - db
     networks:
       - accountability
 
@@ -82,6 +93,11 @@ services:
       REDIS_PORT: 6379
       REDIS_USER: guest
       REDIS_PASSWORD: redispass
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_PORT: 3306
+      DB_NAME: accountability_db
     depends_on:
       - app
       - redis
@@ -89,28 +105,28 @@ services:
     networks:
       - accountability
 
-  dashboard:
-    build: ./
-    command: celery --app ingester_app.data_ingester_async.celery flower --port=5555
-    ports:
-      - "5556:5555"
-    environment:
-      FLASK_DEBUG: 1
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_USER: guest
-      REDIS_PASSWORD: redispass
-    depends_on:
-      - app
-      - redis
-      - worker
-    networks:
-      - accountability
-
-volumes:
-  cache:
-    driver: local
+#  dashboard:
+#    build: ./
+#    command: celery --app ingester_app.data_ingester_async.celery flower --port=5555
+#    ports:
+#      - "5556:5555"
+#    environment:
+#      FLASK_DEBUG: 1
+#      REDIS_HOST: redis
+#      REDIS_PORT: 6379
+#      REDIS_USER: guest
+#      REDIS_PASSWORD: redispass
+#    depends_on:
+#      - app
+#      - redis
+#      - worker
+#    networks:
+#      - accountability
 
 networks:
   accountability:
     driver: bridge
+
+volumes:
+  db:
+    driver: local

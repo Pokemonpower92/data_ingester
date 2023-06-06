@@ -1,10 +1,9 @@
 import json
+from typing import List, Any
 
-from flask import make_response
-
-from ingester_app.data_ingester.constants.edgarconstants import HEADERS, CIK_LENGTH, \
-     SESSION_URL, COMPANY_TICKER_URL
+from ingester_app.data_ingester.constants.edgarconstants import HEADERS, SESSION_URL, COMPANY_TICKER_URL
 from ingester_app.data_ingester.dataingester import DataIngester
+from ingester_app.data_ingester_db.models.cik_ticker_mapping import CikTickerMapping
 from ingester_app.data_ingester_logger.dataingesterlogger import DataIngesterLogger
 
 
@@ -17,11 +16,9 @@ class EDGARIngester(DataIngester):
         super().__init__()
         self.LOGGER = DataIngesterLogger("edgaringester")
 
-    def ingest(self, ticker: str = None) -> json:
+    def ingest_transaction_by_ticker(self, ticker: str = None) -> json:
         """
-        Pull down data from EDGAR and populate the
-        company_ticker_mapping, then fetch the data
-        from EDGAR.
+        Pull
         :return:
         """
 
@@ -33,27 +30,35 @@ class EDGARIngester(DataIngester):
             self.LOGGER.error(f"Could not ingest data for ticker: {ticker}. Error: {e}")
             raise e
 
-    def _get_ticker_cik_mapping(self, ticker: str) -> str:
+    def ingest_cik_ticker_mappings(self) -> List[CikTickerMapping]:
         """
         Pull down the latest company_ticker_mapping
-        :type ticker: the ticker to map to.
-        :return: the CIK of the company.
+        :return: The list of CikTickerMapping objects.
         """
 
-        # Get the data from cache, if it exists.
-        # Cache it if it doesn't.
-        self.LOGGER.info("Fetching ticker to cik mapping from cache.")
-        cache_value = self.data_cache.get(ticker)
-        if not cache_value:
-            self.LOGGER.info("Ticker to cik mapping was uncached. Caching.")
+        self.LOGGER.info("Pulling the latest cik_ticker_mapping data from EDGAR.")
+
+        try:
+            mappings = []
             company_tickers_response = self.data_fetcher.fetch(COMPANY_TICKER_URL, HEADERS)
-
             for idx, company_data in company_tickers_response.items():
-                if ticker == company_data["ticker"]:
-                    cache_value = self.data_cache.cache(ticker, company_data)
+                mappings.append(CikTickerMapping(cik_str=company_data["cik_str"],
+                                                 ticker=company_data["ticker"],
+                                                 title=company_data["title"]))
+            return mappings
 
-        self.LOGGER.info("Ticker to cik mapping fetched.")
-        return cache_value
+        except Exception as e:
+            self.LOGGER.error(f"Could not get the latest cik_ticker_mapping data. Error: {e}")
+            return []
+
+    def ingest_companyfacts_data(self) -> List[Any]:
+        """
+        Pull down the latest company facts data.
+        :return: The list of CompanyFacts objects.
+        """
+
+        self.LOGGER.info("Pulling the latest company_facts data from EDGAR.")
+        return []
 
     def _get_transaction_data_by_ticker(self, ticker: str) -> json:
         """
@@ -62,15 +67,21 @@ class EDGARIngester(DataIngester):
         :return: the json of the response from the api.
         """
 
-        try:
-            self.LOGGER.info(f"Getting session transaction data by ticker: {ticker}")
-            company_mapping = self._get_ticker_cik_mapping(ticker)
-            cik = str(company_mapping["cik_str"]).rjust(CIK_LENGTH, '0')
-            return self._retrieve_transaction_data(cik)
+        raise NotImplementedError
 
-        except Exception as e:
-            self.LOGGER.error(f"Could not get transaction data by ticker: {ticker}. Error: {e}")
-            return make_response({"oopsie x3": "There was a wittle 404 x3B"}, 404)
+        # TODO this needs to be fixed to work with the new
+        # paradigm for storing data.
+
+        # try:
+        #     self.LOGGER.info(f"Getting session transaction data by ticker: {ticker}")
+              ## WE SHOULD QUERY THE DB FOR THIS NOW
+        #     company_mapping = self._get_ticker_cik_mapping(ticker)
+        #     cik = str(company_mapping["cik_str"]).rjust(CIK_LENGTH, '0')
+        #     return self._retrieve_transaction_data(cik)
+        #
+        # except Exception as e:
+        #     self.LOGGER.error(f"Could not get transaction data by ticker: {ticker}. Error: {e}")
+        #     return make_response({"oopsie x3": "There was a wittle 404 x3B"}, 404)
 
     def _retrieve_transaction_data(self, cik: str) -> json:
         """

@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, current_app
+from flask import Blueprint, render_template, current_app, make_response, Response
 
-from ingester_app.data_ingester.edgaringester import EDGARIngester
 from ingester_app.data_ingester_config.limitconfig import NINE_A_SECOND
 from ingester_app.data_ingester_limiter.dataingesterlimiter import data_ingester_limiter
 
@@ -15,7 +14,6 @@ def edgar_index() -> str:
 
 @edgar_blueprint.route("/<ticker>")
 @rate_limiter.limit(NINE_A_SECOND)
-def edgar_ticker(ticker: str) -> str:
-    return EDGARIngester().ingest(ticker)
+def edgar_ticker(ticker: str) -> Response:
+    return make_response({"oopsie x3": "There was a wittle 404 x3B"}, 404)
 
-from ingester_app.blueprints.edgar.models.cik_ticker_mapping import CikTickerMapping  # noqa

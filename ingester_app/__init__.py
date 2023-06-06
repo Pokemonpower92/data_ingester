@@ -1,10 +1,8 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
 from ingester_app.data_ingester_config.app_config import AppConfig
+from ingester_app.data_ingester_db import db
 
-# instantiate the extensions
-db = SQLAlchemy()
 
 def create_app(config: str = "development"):
     app = Flask(__name__)
