@@ -1,6 +1,7 @@
-from celery import Celery
-from ingester_app.data_ingester_async.celery_config import CeleryConfig
+from ingester_app import create_app
+from ingester_app.data_ingester_async.create_celery_app import create_celery_app
 
-app = Celery(__name__)
+flask_app = create_app()
+celery_app = create_celery_app(flask_app)
 
-app.config_from_object(CeleryConfig)
+app = celery_app

@@ -13,6 +13,6 @@ class CeleryConfig:
     beat_schedule = {
         'update_ticker_mapping_table': {
             'task': 'ingester_app.data_ingester_async.periodic_tasks.tasks.ingest_cik_ticker_mapping',
-            'schedule': crontab(minute=1),
+            'schedule': crontab(minute="*/1"),
         },
     }
