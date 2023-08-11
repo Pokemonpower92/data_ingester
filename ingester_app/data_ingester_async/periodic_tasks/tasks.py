@@ -5,10 +5,9 @@ from ingester_app.data_ingester_async.celery import app
 
 @app.task
 def ingest_cik_ticker_mapping():
-    db.session.add_all(EDGARIngester().ingest_cik_ticker_mappings())
-    db.session.commit()
+    EDGARIngester().ingest_cik_ticker_mappings()
 
 
 @app.task
-def ingest_companyfacts_file():
-    return "ingesting_companyfacts_file"
+def ingest_recent_filings():
+    EDGARIngester().ingest_recent_filings()

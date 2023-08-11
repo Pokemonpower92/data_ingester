@@ -14,12 +14,3 @@ class DataIngester:
     def __init__(self):
         self.data_fetcher = DataFetcher()
         self.data_cache = DataCache()
-
-    def ingest(self, identifier: str = None) -> json:
-        """
-        Populate the data set's database with data from
-        the data source.
-        :type identifier: identifier for the query.
-        :return: json of the response.
-        """
-        pass
